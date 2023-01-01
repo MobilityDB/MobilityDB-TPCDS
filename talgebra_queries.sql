@@ -31,8 +31,13 @@
  * @brief Scripts used to benchmark the temporal algebra queries on alternative
  * implementations of a temporal data warehouse using an excerpt of the
  * TPC-DS benchmark https://www.tpc.org/tpcds/.
+ * @note According to 
+ * https://stackoverflow.com/questions/37873517/how-we-can-make-statement-timeout-work-inside-a-function
+ * it is not possible to set a timeout for queries that stops a query and
+ * continues executing a function. For this reason, the queries that exceed
+ * the time out have been commented out in the code below.
  */
- 
+
 DROP FUNCTION IF EXISTS talgebra_queries;
 CREATE OR REPLACE FUNCTION talgebra_queries(times integer,
   newtable boolean DEFAULT true, detailed boolean DEFAULT false)
