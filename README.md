@@ -194,8 +194,6 @@ tpcds_sf1-# ORDER BY t1.QueryId;
  Q6_SCD     | 13.775428 | 28.713988
  Q6_TDW     |  2.348588 | 23.321362
 (15 rows)
-
-tpcds_sf1=#
 ```
 
 To run the benchmark several times and obtain the average of the execution times not considering the first run you can do as follows
@@ -222,11 +220,11 @@ INFO:  Execution Start: 2023-01-01 13:51:51.577553+01, Execution End: 2023-01-01
 
 Time: 1334374.306 ms (22:14.374)
 tpcds_sf1=# SELECT t1.QueryId, ROUND(AVG(t1.Seconds)::numeric,6) AS Algebra,
-  ROUND(AVG(t2.Seconds)::numeric, 6) AS OLAP
-FROM talgebra_queries t1, tolap_queries t2
-WHERE t1.QueryId = t2.QueryId AND t1.RunId > 1 AND t2.RunId > 1
-GROUP BY t1.QueryId
-ORDER BY t1.QueryId;
+tpcds_sf1-#   ROUND(AVG(t2.Seconds)::numeric, 6) AS OLAP
+tpcds_sf1-# FROM talgebra_queries t1, tolap_queries t2
+tpcds_sf1-# WHERE t1.QueryId = t2.QueryId AND t1.RunId > 1 AND t2.RunId > 1
+tpcds_sf1-# GROUP BY t1.QueryId
+tpcds_sf1-# ORDER BY t1.QueryId;
   queryid   |  algebra  |   olap
 ------------+-----------+-----------
  Q1_MobDB   |  0.217597 |  5.214756
@@ -247,8 +245,6 @@ ORDER BY t1.QueryId;
 (15 rows)
 
 Time: 3.997 ms
-tpcds_sf1=#
-tpcds_sf1=#
 ```
 License
 -------
