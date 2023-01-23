@@ -55,7 +55,7 @@ RETURNS text AS $$
 DECLARE
   Path text;
 BEGIN
-  Path := '/home/esteban/src/tpcds/sf' || scalefactor || '/';
+  Path := '/home/esteban/src/MobilityDB-TPCDS/sf' || scalefactor || '/';
 
 /******************************************************************************/
 
@@ -89,6 +89,7 @@ CREATE TABLE scd_item(
   i_container char(10) NULL,
   i_manager_id int NULL,
   i_product_name char(50) NULL,
+  i_other CHAR(1),
   UNIQUE (i_item_id, i_rec_start_date)
 );
 
@@ -124,7 +125,7 @@ CREATE TABLE tdw_item_vt(
 
 INSERT INTO tdw_item_vt(i_item_id, FromDate, ToDate)
 WITH temp(i_item_id, i_item_vt) AS (
-  SELECT i_item_id, unnest(periods(tunion(period(i_rec_start_date, i_rec_end_date))))
+  SELECT i_item_id, unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id )
 SELECT i_item_id, lower(i_item_vt), upper(i_item_vt)
@@ -135,12 +136,12 @@ DROP TABLE IF EXISTS mobdb_item CASCADE;
 CREATE TABLE mobdb_item(
   i_item_id char(16) PRIMARY KEY,
   i_item_desc text NULL,
-  i_item_vt periodset
+  i_item_vt tstzspanset
 );
 
 INSERT INTO mobdb_item(i_item_id, i_item_desc, i_item_vt)
 WITH temp(i_item_id, i_item_vt) AS (
-  SELECT i_item_id, tunion(period(i_rec_start_date, i_rec_end_date))
+  SELECT i_item_id, tunion(span(i_rec_start_date, i_rec_end_date))
   FROM scd_item
   GROUP BY i_item_id )
 SELECT i.i_item_id, i.i_item_desc, t.i_item_vt
@@ -182,7 +183,7 @@ CREATE TABLE tdw_brand_vt(
 
 INSERT INTO tdw_brand_vt(i_brand_id, FromDate, ToDate)
 WITH temp(i_brand_id, i_brand_vt) AS (
-  SELECT i_brand_id, unnest(periods(tunion(period(i_rec_start_date, i_rec_end_date))))
+  SELECT i_brand_id, unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_brand_id )
 SELECT i_brand_id, lower(i_brand_vt), upper(i_brand_vt)
@@ -192,12 +193,12 @@ ORDER BY i_brand_id;
 DROP TABLE IF EXISTS mobdb_brand CASCADE;
 CREATE TABLE mobdb_brand(
   i_brand_id int PRIMARY KEY,
-  i_brand_vt periodset
+  i_brand_vt tstzspanset
 );
 
 INSERT INTO mobdb_brand(i_brand_id, i_brand_vt)
 WITH temp(i_brand_id, i_brand_vt) AS (
-  SELECT i_brand_id, tunion(period(i_rec_start_date, i_rec_end_date))
+  SELECT i_brand_id, tunion(span(i_rec_start_date, i_rec_end_date))
   FROM scd_item
   GROUP BY i_brand_id )
 SELECT b.i_brand_id, t.i_brand_vt
@@ -254,7 +255,7 @@ CREATE TABLE tdw_brand_category(
 INSERT INTO tdw_brand_category(i_brand_id, i_category_id, FromDate, ToDate)
 WITH temp(i_brand_id, i_category_id, i_brand_cat_vt) AS (
   SELECT i_brand_id, i_category_id,
-    unnest(periods(tunion(period(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_brand_id, i_category_id )
 SELECT i_brand_id, i_category_id, lower(i_brand_cat_vt), upper(i_brand_cat_vt)
@@ -265,14 +266,14 @@ DROP TABLE IF EXISTS mobdb_brand_category CASCADE;
 CREATE TABLE mobdb_brand_category(
   i_brand_id int NOT NULL,
   i_category_id int NOT NULL,
-  i_brand_category_vt periodset,
+  i_brand_category_vt tstzspanset,
   PRIMARY KEY (i_brand_id, i_category_id),
   FOREIGN KEY (i_brand_id) REFERENCES mobdb_brand (i_brand_id),
   FOREIGN KEY (i_category_id) REFERENCES mobdb_category (i_category_id)
 );
 
 INSERT INTO mobdb_brand_category(i_brand_id, i_category_id, i_brand_category_vt)
-SELECT i_brand_id, i_category_id, tunion(period(i_rec_start_date, i_rec_end_date))
+SELECT i_brand_id, i_category_id, tunion(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_brand_id, i_category_id 
 ORDER BY i_brand_id, i_category_id;
@@ -295,7 +296,7 @@ CREATE TABLE tdw_item_brand(
 INSERT INTO tdw_item_brand(i_item_id, i_brand_id, FromDate, ToDate)
 WITH temp(i_item_id, i_brand_id, i_item_brand_vt) AS (
   SELECT i_item_id, i_brand_id,
-    unnest(periods(tunion(period(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id, i_brand_id )
 SELECT i_item_id, i_brand_id, lower(i_item_brand_vt), upper(i_item_brand_vt)
@@ -306,7 +307,7 @@ DROP TABLE IF EXISTS mobdb_item_brand CASCADE;
 CREATE TABLE mobdb_item_brand(
   i_item_id char(16) NOT NULL,
   i_brand_id int NOT NULL,
-  i_item_brand_vt periodset,
+  i_item_brand_vt tstzspanset,
   PRIMARY KEY (i_item_id, i_brand_id),
   FOREIGN KEY (i_item_id) REFERENCES mobdb_item (i_item_id),
   FOREIGN KEY (i_brand_id) REFERENCES mobdb_brand (i_brand_id)
@@ -314,7 +315,7 @@ CREATE TABLE mobdb_item_brand(
 
 INSERT INTO mobdb_item_brand(i_item_id, i_brand_id, i_item_brand_vt)
 SELECT i_item_id, i_brand_id,
-    tunion(period(i_rec_start_date, i_rec_end_date))
+    tunion(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_item_id, i_brand_id
 ORDER BY i_item_id, i_brand_id;
@@ -336,7 +337,7 @@ CREATE TABLE tdw_item_price(
 INSERT INTO tdw_item_price(i_item_id, i_item_price, FromDate, ToDate)
 WITH temp(i_item_id, i_item_price, i_item_price_vt) AS (
   SELECT i_item_id, i_current_price,
-    unnest(periods(tunion(period(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id, i_current_price )
 SELECT i_item_id, i_item_price, lower(i_item_price_vt), upper(i_item_price_vt)
@@ -347,14 +348,14 @@ DROP TABLE IF EXISTS mobdb_item_price CASCADE;
 CREATE TABLE mobdb_item_price(
   i_item_id char(16) NOT NULL,
   i_item_price decimal(7, 2) NULL,
-  i_item_price_vt periodset,
+  i_item_price_vt tstzspanset,
   PRIMARY KEY (i_item_id, i_item_price),
   FOREIGN KEY (i_item_id) REFERENCES mobdb_item (i_item_id)
 );
 
 INSERT INTO mobdb_item_price(i_item_id, i_item_price, i_item_price_vt)
 SELECT i_item_id, i_current_price,
-  tunion(period(i_rec_start_date, i_rec_end_date))
+  tunion(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_item_id, i_current_price
 ORDER BY i_item_id, i_current_price;
@@ -393,7 +394,8 @@ CREATE TABLE date_dim(
   d_current_week char(1) NULL,
   d_current_month char(1) NULL,
   d_current_quarter char(1) NULL,
-  d_current_year char(1) NULL
+  d_current_year char(1) NULL,
+  d_other CHAR(1)
 );
 
 EXECUTE format('COPY date_dim FROM ''%sdate_dim.csv'' DELIMITER '',''  CSV HEADER', Path);
@@ -427,6 +429,7 @@ CREATE TABLE scd_store_sales(
   ss_net_paid decimal(7, 2) NULL,
   ss_net_paid_inc_tax decimal(7, 2) NULL,
   ss_net_profit decimal(7, 2) NULL,
+  ss_other CHAR(1),
   PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number),
   FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk),
   FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk)
