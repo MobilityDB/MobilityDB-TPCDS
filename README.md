@@ -38,15 +38,15 @@ $ psql tpcds_sf1
 psql (13.10)
 Type "help" for help.
 
-tpcds_sf1=# \i tdw_load.sql
+tpcds_sf1=> \i tdw_load.sql
 psql:tdw_load.sql:52: NOTICE:  function tdw_load() does not exist, skipping
 DROP FUNCTION
 CREATE FUNCTION
 
-tpcds_sf1=# \timing
+tpcds_sf1=> \timing
 Timing is on.
 
-tpcds_sf1=# select tdw_load(1);
+tpcds_sf1=> select tdw_load(1);
 NOTICE:  installing required extension "postgis"
 NOTICE:  table "scd_item" does not exist, skipping
 NOTICE:  table "tdw_item" does not exist, skipping
@@ -74,7 +74,7 @@ NOTICE:  view "mobdb_store_sales" does not exist, skipping
 
 Time: 136947.539 ms (02:16.948)
 
-tpcds_sf1=# \i talgebra_views.sql
+tpcds_sf1=> \i talgebra_views.sql
 psql:talgebra_views.sql:52: NOTICE:  view "q1_mobdb" does not exist, skipping
 DROP VIEW
 Time: 0.606 ms
@@ -167,7 +167,7 @@ CREATE VIEW
 Time: 6.254 ms
 Time: 0.093 ms
 
-tpcds_sf1=# \i talgebra_queries.sql
+tpcds_sf1=> \i talgebra_queries.sql
 psql:talgebra_queries.sql:41: NOTICE:  function talgebra_queries() does not exist, skipping
 DROP FUNCTION
 Time: 0.333 ms
@@ -175,7 +175,7 @@ CREATE FUNCTION
 Time: 1797.864 ms (00:01.798)
 Time: 0.203 ms
 
-tpcds_sf1=# SELECT talgebra_queries(1);
+tpcds_sf1=> SELECT talgebra_queries(1);
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:00:17.58, Seconds: 17.58, Number of Rows: 4421
 INFO:  Query: Q1_TDW, Run: 1, Total Duration: 00:08:50.459, Seconds: 530.459, Number of Rows: 4604
 INFO:  Query: Q1_SCD, Run: 1, Total Duration: 00:09:35.757, Seconds: 575.757, Number of Rows: 4604
@@ -199,7 +199,7 @@ INFO:  Execution Start: 2023-02-11 15:31:36.327977+01, Execution End: 2023-02-11
 
 Time: 10495.866 ms (00:10.496)
 
-tpcds_sf1=# \i tolap_queries.sql
+tpcds_sf1=> \i tolap_queries.sql
 psql:tolap_queries.sql:41: NOTICE:  function tolap_queries() does not exist, skipping
 DROP FUNCTION
 Time: 0.453 ms
@@ -207,7 +207,7 @@ CREATE FUNCTION
 Time: 20.734 ms
 Time: 0.166 ms
 
-tpcds_sf1=# SELECT tolap_queries(1);
+tpcds_sf1=> SELECT tolap_queries(1);
 NOTICE:  table "tolap_queries" does not exist, skipping
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:21:14.718, Seconds: 1274.718, Number of Rows: 4421
 INFO:  Query: Q1_TDW, Run: 1, Total Duration: 00:54:36.526, Seconds: 3276.526, Number of Rows: 4604
@@ -232,7 +232,7 @@ INFO:  Execution Start: 2023-02-11 15:32:22.673339+01, Execution End: 2023-02-11
 
 Time: 65696.671 ms (01:05.697)
 
-tpcds_sf1=# SELECT t1.QueryId, t1.Seconds AS Algebra, t2.Seconds AS OLAP
+tpcds_sf1=> SELECT t1.QueryId, t1.Seconds AS Algebra, t2.Seconds AS OLAP
   FROM talgebra_queries t1, tolap_queries t2
   WHERE t1.QueryId = t2.QueryId
   ORDER BY t1.QueryId;
@@ -261,7 +261,7 @@ Time: 0.967 ms
 
 To run the benchmark several times and obtain the average of the execution times not considering the first run you can do as follows
 ```sql
-tpcds_sf1=# select talgebra_queries(6);
+tpcds_sf1=> select talgebra_queries(6);
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:00:19.144, Seconds: 19.144, Number of Rows: 4421
 ...
 INFO:  Query: Q6_SCD, Run: 6, Total Duration: 01:57:46.686, Seconds: 7066.686, Number of Rows: 750
@@ -273,7 +273,7 @@ INFO:  Execution Start: 2023-02-11 15:40:19.728245+01, Execution End: 2023-02-11
 
 Time: 63025.500 ms (01:03.026)
 
-tpcds_sf1=# select tolap_queries(6);
+tpcds_sf1=> select tolap_queries(6);
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:21:07.541, Seconds: 1267.541, Number of Rows: 4421
 ...
 INFO:  Query: Q6_SCD, Run: 6, Total Duration: 02:55:51.476, Seconds: 10551.476, Number of Rows: 750
@@ -285,7 +285,7 @@ INFO:  Execution Start: 2023-02-11 15:41:34.848755+01, Execution End: 2023-02-11
 
 Time: 389718.760 ms (06:29.719)
 
-tpcds_sf1=# SELECT t1.QueryId, ROUND(AVG(t1.Seconds)::numeric,6) AS Algebra,
+tpcds_sf1=> SELECT t1.QueryId, ROUND(AVG(t1.Seconds)::numeric,6) AS Algebra,
   ROUND(AVG(t2.Seconds)::numeric, 6) AS OLAP
 FROM talgebra_queries t1, tolap_queries t2
 WHERE t1.QueryId = t2.QueryId AND t1.RunId > 1 AND t2.RunId > 1
