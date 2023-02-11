@@ -89,7 +89,6 @@ CREATE TABLE scd_item(
   i_container char(10) NULL,
   i_manager_id int NULL,
   i_product_name char(50) NULL,
-  i_other CHAR(1),
   UNIQUE (i_item_id, i_rec_start_date)
 );
 
@@ -394,8 +393,7 @@ CREATE TABLE date_dim(
   d_current_week char(1) NULL,
   d_current_month char(1) NULL,
   d_current_quarter char(1) NULL,
-  d_current_year char(1) NULL,
-  d_other CHAR(1)
+  d_current_year char(1) NULL
 );
 
 EXECUTE format('COPY date_dim FROM ''%sdate_dim.csv'' DELIMITER '',''  CSV HEADER', Path);
@@ -429,7 +427,6 @@ CREATE TABLE scd_store_sales(
   ss_net_paid decimal(7, 2) NULL,
   ss_net_paid_inc_tax decimal(7, 2) NULL,
   ss_net_profit decimal(7, 2) NULL,
-  ss_other CHAR(1),
   PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number),
   FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk),
   FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk)
@@ -450,6 +447,8 @@ SET ss_item_id = i.i_item_id
 FROM scd_item i
 WHERE s.ss_item_sk = i.i_item_sk;
 
+/* Tables mobdb_store_sales and tdw_store_sales are equal
+ * The following view is created to avoid any ambiguity */
 DROP VIEW IF EXISTS mobdb_store_sales CASCADE;
 CREATE VIEW mobdb_store_sales AS
 SELECT * FROM tdw_store_sales;

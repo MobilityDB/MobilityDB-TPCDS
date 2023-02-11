@@ -104,9 +104,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -133,9 +133,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -162,9 +162,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -198,9 +198,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -229,9 +229,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -262,9 +262,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -298,9 +298,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -328,9 +328,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -358,9 +358,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -393,9 +393,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -422,9 +422,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -451,9 +451,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -487,9 +487,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -519,9 +519,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -552,9 +552,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -587,7 +587,7 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
   Seconds := EXTRACT(MILLISECONDS FROM Duration)/1000;
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
@@ -617,9 +617,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
@@ -647,9 +647,9 @@ LOOP
   INTO J;
 
   PlanningTime := (J->0->>'Planning Time')::float;
-  ExecutionTime := (J->0->>'Execution Time')::float / 1000;
+  ExecutionTime := (J->0->>'Execution Time')::float;
   Duration := make_interval(secs := PlanningTime + ExecutionTime);
-  Seconds := EXTRACT(MILLISECONDS FROM Duration) / 1000;
+  Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
     RAISE INFO 'Query: %, Run: %, Start Time: %, Planning Time: % milisecs, Execution Time: % secs, Total Duration: %, Seconds: %, Number of Rows: %',
