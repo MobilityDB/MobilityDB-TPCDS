@@ -71,8 +71,8 @@
  * The following are the loading time for the three scale factors on a destop
  * machine with an AMD Ryzen 9 3900X 12-Core Processor 3.79 GHz and 64 G of RAM
  * sf1: Time: 62924.914 ms (01:02.925)
- * sf10: Time: 709504.008 ms (11:49.504)
- * sf100: 
+ * sf10: Time: 383145.002 ms (06:23.145)
+ * sf100: (OLD) Time: 10794420.002 ms (02:59:54.420) -> NEW ???
  */
 
 DROP FUNCTION IF EXISTS tdw_load;
@@ -313,7 +313,7 @@ CREATE UNLOGGED TABLE tdw_item_brand(
   i_brand_id int NOT NULL,
   FromDate date NOT NULL,
   ToDate date NULL,
-  PRIMARY KEY (i_item_id, i_brand_id, FromDate), 
+  PRIMARY KEY (i_item_id, i_brand_id, FromDate),
   FOREIGN KEY (i_item_id) REFERENCES tdw_item(i_item_id),
   FOREIGN KEY (i_brand_id) REFERENCES tdw_brand(i_brand_id)
 );
@@ -334,8 +334,8 @@ CREATE UNLOGGED TABLE mobdb_item_brand(
   i_brand_id int NOT NULL,
   i_item_brand_vt tstzspanset,
   PRIMARY KEY (i_item_id, i_brand_id),
-  FOREIGN KEY (i_item_id) REFERENCES mobdb_item (i_item_id),
-  FOREIGN KEY (i_brand_id) REFERENCES mobdb_brand (i_brand_id)
+  FOREIGN KEY (i_item_id) REFERENCES mobdb_item(i_item_id),
+  FOREIGN KEY (i_brand_id) REFERENCES mobdb_brand(i_brand_id)
 );
 
 INSERT INTO mobdb_item_brand(i_item_id, i_brand_id, i_item_brand_vt)
@@ -375,7 +375,7 @@ CREATE UNLOGGED TABLE mobdb_item_price(
   i_item_price decimal(7, 2) NULL,
   i_item_price_vt tstzspanset,
   PRIMARY KEY (i_item_id, i_item_price),
-  FOREIGN KEY (i_item_id) REFERENCES mobdb_item (i_item_id)
+  FOREIGN KEY (i_item_id) REFERENCES tdw_item (i_item_id)
 );
 
 INSERT INTO mobdb_item_price(i_item_id, i_item_price, i_item_price_vt)
@@ -457,20 +457,11 @@ CREATE UNLOGGED TABLE scd_store_sales(
 
 EXECUTE format('COPY scd_store_sales FROM ''%sscd_store_sales.csv'' DELIMITER '',''  CSV HEADER', Path);
 
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_pk
-  PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number);
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_date
-  FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk);
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_item
-  FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk);
-  
 DROP TABLE IF EXISTS tdw_store_sales CASCADE;
 CREATE UNLOGGED TABLE tdw_store_sales AS
 SELECT * FROM scd_store_sales;
 
 ALTER TABLE tdw_store_sales ADD COLUMN ss_item_id char(16);
-ALTER TABLE tdw_store_sales ADD CONSTRAINT fk_item_id
- FOREIGN KEY(ss_item_id) REFERENCES tdw_item (i_item_id);
 
 UPDATE tdw_store_sales s
 SET ss_item_id = i.i_item_id
@@ -482,6 +473,17 @@ WHERE s.ss_item_sk = i.i_item_sk;
 DROP VIEW IF EXISTS mobdb_store_sales CASCADE;
 CREATE VIEW mobdb_store_sales AS
 SELECT * FROM tdw_store_sales;
+
+/* Add the constraints after the fact tables have been created */
+
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_pk
+  PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number);
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_date
+  FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk);
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_item
+  FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk);
+ALTER TABLE tdw_store_sales ADD CONSTRAINT fk_item_id
+ FOREIGN KEY(ss_item_id) REFERENCES tdw_item (i_item_id);
 
 /******************************************************************************/
 
