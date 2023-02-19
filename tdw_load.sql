@@ -47,6 +47,32 @@
  * There are three CSV files, namely, scd_item.csv, scd_store_sales.csv, and
  * date_dim.csv. These files correspond to the SCD implementation. From the
  * same files, the TDW and the MobilityDB implementation are derived.
+ *
+ * The tables are UNLOGGED to avoid using the Write-Ahead Log (WAL). As stated 
+ * in the PostgreSQL manual
+ * https://www.postgresql.org/docs/current/sql-createtable.html
+ *   "Data written to unlogged tables is not written to the write-ahead log,
+ *   which makes them considerably faster than ordinary tables. However, they
+ *   are not crash-safe: an unlogged table is automatically truncated after a
+ *   crash or unclean shutdown. The contents of an unlogged table are also not
+ *   replicated to standby servers. Any indexes created on an unlogged table
+ *   are automatically unlogged as well."
+ * The number of lines of the fact table (the larger one) is as follows:
+ * - sf1: 2 490 397
+ * - sf10: 24 906 845
+ * - sf100: 249 018 773
+ * For this reason the indexes and foreign key constraints are also created
+ * AFTER the whole table has been created from the CSV file. In the SF 1
+ * the speed up of these optimizations wrt a more traditional method WHERE
+ * the tables are logged and the constraints are in checked during the COPY
+ * are a
+ * - traditional method: Time: 151818.781 ms (02:31.819)
+ * - optimized method: Time: 62924.914 ms (01:02.925)
+ * The following are the loading time for the three scale factors on a destop
+ * machine with an AMD Ryzen 9 3900X 12-Core Processor 3.79 GHz and 64 G of RAM
+ * sf1: Time: 62924.914 ms (01:02.925)
+ * sf10: Time: 709504.008 ms (11:49.504)
+ * sf100: 
  */
 
 DROP FUNCTION IF EXISTS tdw_load;
@@ -66,7 +92,7 @@ CREATE EXTENSION IF NOT EXISTS mobilitydb CASCADE;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS scd_item CASCADE;
-CREATE TABLE scd_item(
+CREATE UNLOGGED TABLE scd_item(
   i_item_sk int PRIMARY KEY,
   i_item_id char(16) NOT NULL,
   i_rec_start_date date NULL,
@@ -95,7 +121,7 @@ CREATE TABLE scd_item(
 EXECUTE format('COPY scd_item FROM ''%sscd_item.csv'' DELIMITER '',''  CSV HEADER', Path);
 
 DROP TABLE IF EXISTS tdw_item CASCADE;
-CREATE TABLE tdw_item(
+CREATE UNLOGGED TABLE tdw_item(
   i_item_id char(16) PRIMARY KEY,
   i_item_desc text NULL
 );
@@ -114,7 +140,7 @@ FROM temp
 WHERE desc_rank = 1;
 
 DROP TABLE IF EXISTS tdw_item_vt CASCADE;
-CREATE TABLE tdw_item_vt(
+CREATE UNLOGGED TABLE tdw_item_vt(
   i_item_id char(16) NOT NULL,
   FromDate date NOT NULL,
   ToDate date NOT NULL,
@@ -132,7 +158,7 @@ FROM temp
 ORDER BY i_item_id;
 
 DROP TABLE IF EXISTS mobdb_item CASCADE;
-CREATE TABLE mobdb_item(
+CREATE UNLOGGED TABLE mobdb_item(
   i_item_id char(16) PRIMARY KEY,
   i_item_desc text NULL,
   i_item_vt tstzspanset
@@ -153,7 +179,7 @@ ORDER BY i.i_item_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_brand CASCADE;
-CREATE TABLE tdw_brand(
+CREATE UNLOGGED TABLE tdw_brand(
   i_brand_id int PRIMARY KEY,
   i_brand char(50) NULL
 );
@@ -172,7 +198,7 @@ FROM temp
 WHERE brand_rank = 1;
 
 DROP TABLE IF EXISTS tdw_brand_vt CASCADE;
-CREATE TABLE tdw_brand_vt(
+CREATE UNLOGGED TABLE tdw_brand_vt(
   i_brand_id int NOT NULL,
   FromDate date NOT NULL,
   ToDate date NULL,
@@ -190,7 +216,7 @@ FROM temp
 ORDER BY i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_brand CASCADE;
-CREATE TABLE mobdb_brand(
+CREATE UNLOGGED TABLE mobdb_brand(
   i_brand_id int PRIMARY KEY,
   i_brand_vt tstzspanset
 );
@@ -210,7 +236,7 @@ ORDER BY b.i_brand_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_category CASCADE;
-CREATE TABLE tdw_category(
+CREATE UNLOGGED TABLE tdw_category(
   i_category_id int PRIMARY KEY,
   i_category text
 );
@@ -229,7 +255,7 @@ FROM temp
 WHERE category_rank = 1;
 
 DROP TABLE IF EXISTS mobdb_category CASCADE;
-CREATE TABLE mobdb_category(
+CREATE UNLOGGED TABLE mobdb_category(
   i_category_id int PRIMARY KEY,
   i_category text
 );
@@ -241,7 +267,7 @@ SELECT * FROM tdw_category;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_brand_category CASCADE;
-CREATE TABLE tdw_brand_category(
+CREATE UNLOGGED TABLE tdw_brand_category(
   i_brand_id int NOT NULL,
   i_category_id int NOT NULL,
   FromDate date NOT NULL,
@@ -262,7 +288,7 @@ FROM temp
 ORDER BY i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_brand_category CASCADE;
-CREATE TABLE mobdb_brand_category(
+CREATE UNLOGGED TABLE mobdb_brand_category(
   i_brand_id int NOT NULL,
   i_category_id int NOT NULL,
   i_brand_category_vt tstzspanset,
@@ -282,7 +308,7 @@ ORDER BY i_brand_id, i_category_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_item_brand CASCADE;
-CREATE TABLE tdw_item_brand(
+CREATE UNLOGGED TABLE tdw_item_brand(
   i_item_id char(16) NOT NULL,
   i_brand_id int NOT NULL,
   FromDate date NOT NULL,
@@ -303,7 +329,7 @@ FROM temp
 ORDER BY i_item_id, i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_item_brand CASCADE;
-CREATE TABLE mobdb_item_brand(
+CREATE UNLOGGED TABLE mobdb_item_brand(
   i_item_id char(16) NOT NULL,
   i_brand_id int NOT NULL,
   i_item_brand_vt tstzspanset,
@@ -314,7 +340,7 @@ CREATE TABLE mobdb_item_brand(
 
 INSERT INTO mobdb_item_brand(i_item_id, i_brand_id, i_item_brand_vt)
 SELECT i_item_id, i_brand_id,
-    tunion(span(i_rec_start_date, i_rec_end_date))
+  tunion(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_item_id, i_brand_id
 ORDER BY i_item_id, i_brand_id;
@@ -324,7 +350,7 @@ ORDER BY i_item_id, i_brand_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_item_price CASCADE;
-CREATE TABLE tdw_item_price(
+CREATE UNLOGGED TABLE tdw_item_price(
   i_item_id char(16) NOT NULL,
   i_item_price decimal(7, 2) NULL,
   FromDate date NOT NULL,
@@ -344,7 +370,7 @@ FROM temp
 ORDER BY i_item_id, i_item_price;
 
 DROP TABLE IF EXISTS mobdb_item_price CASCADE;
-CREATE TABLE mobdb_item_price(
+CREATE UNLOGGED TABLE mobdb_item_price(
   i_item_id char(16) NOT NULL,
   i_item_price decimal(7, 2) NULL,
   i_item_price_vt tstzspanset,
@@ -365,7 +391,7 @@ ORDER BY i_item_id, i_current_price;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS date_dim CASCADE;
-CREATE TABLE date_dim(
+CREATE UNLOGGED TABLE date_dim(
   d_date_sk int PRIMARY KEY,
   d_date_id char(16) NOT NULL,
   d_date date NULL,
@@ -403,7 +429,7 @@ EXECUTE format('COPY date_dim FROM ''%sdate_dim.csv'' DELIMITER '',''  CSV HEADE
  *****************************************************************************/
 
 DROP TABLE IF EXISTS scd_store_sales CASCADE;
-CREATE TABLE scd_store_sales(
+CREATE UNLOGGED TABLE scd_store_sales(
   ss_sold_date_sk int NOT NULL,
   ss_sold_time_sk int NULL,
   ss_item_sk int NULL,
@@ -426,16 +452,20 @@ CREATE TABLE scd_store_sales(
   ss_coupon_amt decimal(7, 2) NULL,
   ss_net_paid decimal(7, 2) NULL,
   ss_net_paid_inc_tax decimal(7, 2) NULL,
-  ss_net_profit decimal(7, 2) NULL,
-  PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number),
-  FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk),
-  FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk)
+  ss_net_profit decimal(7, 2) NULL
 );
 
 EXECUTE format('COPY scd_store_sales FROM ''%sscd_store_sales.csv'' DELIMITER '',''  CSV HEADER', Path);
 
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_pk
+  PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number);
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_date
+  FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk);
+ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_item
+  FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk);
+  
 DROP TABLE IF EXISTS tdw_store_sales CASCADE;
-CREATE TABLE tdw_store_sales AS
+CREATE UNLOGGED TABLE tdw_store_sales AS
 SELECT * FROM scd_store_sales;
 
 ALTER TABLE tdw_store_sales ADD COLUMN ss_item_id char(16);

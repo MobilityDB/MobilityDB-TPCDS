@@ -36,7 +36,7 @@
  * The MobilityDB queries have two alternative aggregations, one of which is
  * commented out, e.g., in Query 1 below
  * - tunion(i_item_price_vt)
- * - unnest(periods(tunion(i_item_price_vt)))
+ * - unnest(spans(tunion(i_item_price_vt)))
  * The first version returns a period set and is the standard MobilityDB 
  * answer. The second version is used for verifying that the number of
  * rows obtained in the MobilityDB and the TDW and SCD versions coincide.
@@ -53,7 +53,7 @@ DROP VIEW IF EXISTS Q1_MobDB;
 CREATE VIEW Q1_MobDB(i_item_id, i_price5to10_vt) AS 
 SELECT i_item_id, 
   tunion(i_item_price_vt)
-  -- unnest(periods(tunion(i_item_price_vt)))
+  -- unnest(spans(tunion(i_item_price_vt)))
 FROM mobdb_item_price
 WHERE i_item_price > 5 AND i_item_price < 10
 GROUP BY i_item_id
@@ -130,7 +130,7 @@ DROP VIEW IF EXISTS Q2_MobDB;
 CREATE VIEW Q2_MobDB(i_brand_id, b_brand_anycat_vt) AS 
 SELECT i_brand_id, 
   tunion(i_brand_category_vt)
-  -- unnest(periods(tunion(i_brand_category_vt)))
+  -- unnest(spans(tunion(i_brand_category_vt)))
 FROM mobdb_brand_category
 GROUP BY i_brand_id
 ORDER BY i_brand_id;
@@ -205,7 +205,7 @@ DROP VIEW IF EXISTS Q3_MobDB;
 CREATE VIEW Q3_MobDB(i_item_id, i_item_price, i_brand_id, i_price_brand_vt) AS 
 SELECT p.i_item_id, p.i_item_price, b.i_brand_id, 
   p.i_item_price_vt * b.i_item_brand_vt AS i_price_brand_vt
-  -- unnest(periods(p.i_item_price_vt * b.i_item_brand_vt)) AS i_price_brand_vt
+  -- unnest(spans(p.i_item_price_vt * b.i_item_brand_vt)) AS i_price_brand_vt
 FROM mobdb_item_price p, mobdb_item_brand b
 WHERE p.i_item_id = b.i_item_id AND
   p.i_item_price_vt * b.i_item_brand_vt IS NOT NULL
@@ -273,7 +273,7 @@ WITH brandAOrPriceGT20(i_item_id, i_brandAOrPriceGT20_vt) AS (
 )
 SELECT i_item_id, 
   tunion(i_brandAOrPriceGT20_vt)
-  -- unnest(periods(tunion(i_brandAOrPriceGT20_vt)))
+  -- unnest(spans(tunion(i_brandAOrPriceGT20_vt)))
 FROM brandAOrPriceGT20
 GROUP BY i_item_id
 ORDER BY i_item_id;
@@ -358,7 +358,7 @@ WITH BrandNoItems(i_brand_id, noItems) AS (
 )
 SELECT i_brand_id, 
   whenTrue(noItems #= 1)
-  -- unnest(periods(whenTrue(noItems #= 1)))
+  -- unnest(spans(whenTrue(noItems #= 1)))
 FROM BrandNoItems
 WHERE whenTrue(noItems #= 1) IS NOT NULL
 ORDER BY i_brand_id;
@@ -646,7 +646,7 @@ WITH BrandNoItems AS (
 )
 SELECT i_brand_id,
   whenTrue(tcount #>= 5)
-  -- unnest(periods(whenTrue(tcount #>= 5)))
+  -- unnest(spans(whenTrue(tcount #>= 5)))
 FROM BrandNoItems
 WHERE whenTrue(tcount #>= 5) IS NOT NULL
 ORDER BY i_brand_id;
