@@ -190,8 +190,8 @@ Time: 1797.864 ms (00:01.798)
 Time: 0.203 ms
 
 -- Run the benchmark for the algebra queries only once as stated by argument.
--- You can also run the queries several times by giving other values for the argument.
--- An example is given below.
+-- You can run the queries several times by giving other values for the argument.
+-- An example is given later in this document.
 tpcds_sf1=> SELECT talgebra_queries(1);
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:00:17.58, Seconds: 17.58, Number of Rows: 4421
 INFO:  Query: Q1_TDW, Run: 1, Total Duration: 00:08:50.459, Seconds: 530.459, Number of Rows: 4604
@@ -226,7 +226,7 @@ Time: 20.734 ms
 Time: 0.166 ms
 
 -- Run the benchmark for the OLAP queries only once as stated by the argument.
--- You can also run the queries several times by giving other values for the argument.
+-- You can run the queries several times by giving other values for the argument.
 tpcds_sf1=> SELECT tolap_queries(1);
 NOTICE:  table "tolap_queries" does not exist, skipping
 INFO:  Query: Q1_MobDB, Run: 1, Total Duration: 00:21:14.718, Seconds: 1274.718, Number of Rows: 4421
