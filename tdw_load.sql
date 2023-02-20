@@ -68,11 +68,11 @@
  * are a
  * - traditional method: Time: 151818.781 ms (02:31.819)
  * - optimized method: Time: 62924.914 ms (01:02.925)
- * The following are the loading time for the three scale factors on a destop
+ * The following are the loading time for the three scale factors on a desktop
  * machine with an AMD Ryzen 9 3900X 12-Core Processor 3.79 GHz and 64 G of RAM
  * sf1: Time: 62924.914 ms (01:02.925)
  * sf10: Time: 383145.002 ms (06:23.145)
- * sf100: (OLD) Time: 10794420.002 ms (02:59:54.420) -> NEW ???
+ * sf100: Time: 6158453.478 ms (01:42:38.453)
  */
 
 DROP FUNCTION IF EXISTS tdw_load;
