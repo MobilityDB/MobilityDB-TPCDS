@@ -70,18 +70,18 @@
  * - optimized method: Time: 62924.914 ms (01:02.925)
  * The following are the loading time for the three scale factors on a desktop
  * machine with an AMD Ryzen 9 3900X 12-Core Processor 3.79 GHz and 64 G of RAM
- * sf1: Time: 62924.914 ms (01:02.925)
- * sf10: Time: 383145.002 ms (06:23.145)
+ * sf1: Time: 30770.830 ms (00:30.771)
+ * sf10: Time: 369864.800 ms (06:09.865)
  * sf100: Time: 6158453.478 ms (01:42:38.453)
  */
 
 DROP FUNCTION IF EXISTS tdw_load;
-CREATE OR REPLACE FUNCTION tdw_load(scalefactor integer)
+CREATE OR REPLACE FUNCTION tdw_load(SF integer)
 RETURNS text AS $$
 DECLARE
   Path text;
 BEGIN
-  Path := '/home/esteban/src/MobilityDB-TPCDS/sf' || scalefactor || '/';
+  Path := '/home/esteban/src/MobilityDB-TPCDS/sf' || SF || '/';
 
 /******************************************************************************/
 
@@ -92,7 +92,7 @@ CREATE EXTENSION IF NOT EXISTS mobilitydb CASCADE;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS scd_item CASCADE;
-CREATE UNLOGGED TABLE scd_item(
+CREATE TABLE scd_item(
   i_item_sk int PRIMARY KEY,
   i_item_id char(16) NOT NULL,
   i_rec_start_date date NULL,
@@ -121,7 +121,7 @@ CREATE UNLOGGED TABLE scd_item(
 EXECUTE format('COPY scd_item FROM ''%sscd_item.csv'' DELIMITER '',''  CSV HEADER', Path);
 
 DROP TABLE IF EXISTS tdw_item CASCADE;
-CREATE UNLOGGED TABLE tdw_item(
+CREATE TABLE tdw_item(
   i_item_id char(16) PRIMARY KEY,
   i_item_desc text NULL
 );
@@ -140,7 +140,7 @@ FROM temp
 WHERE desc_rank = 1;
 
 DROP TABLE IF EXISTS tdw_item_vt CASCADE;
-CREATE UNLOGGED TABLE tdw_item_vt(
+CREATE TABLE tdw_item_vt(
   i_item_id char(16) NOT NULL,
   FromDate date NOT NULL,
   ToDate date NOT NULL,
@@ -158,7 +158,7 @@ FROM temp
 ORDER BY i_item_id;
 
 DROP TABLE IF EXISTS mobdb_item CASCADE;
-CREATE UNLOGGED TABLE mobdb_item(
+CREATE TABLE mobdb_item(
   i_item_id char(16) PRIMARY KEY,
   i_item_desc text NULL,
   i_item_vt tstzspanset
@@ -179,7 +179,7 @@ ORDER BY i.i_item_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_brand CASCADE;
-CREATE UNLOGGED TABLE tdw_brand(
+CREATE TABLE tdw_brand(
   i_brand_id int PRIMARY KEY,
   i_brand char(50) NULL
 );
@@ -198,7 +198,7 @@ FROM temp
 WHERE brand_rank = 1;
 
 DROP TABLE IF EXISTS tdw_brand_vt CASCADE;
-CREATE UNLOGGED TABLE tdw_brand_vt(
+CREATE TABLE tdw_brand_vt(
   i_brand_id int NOT NULL,
   FromDate date NOT NULL,
   ToDate date NULL,
@@ -216,7 +216,7 @@ FROM temp
 ORDER BY i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_brand CASCADE;
-CREATE UNLOGGED TABLE mobdb_brand(
+CREATE TABLE mobdb_brand(
   i_brand_id int PRIMARY KEY,
   i_brand_vt tstzspanset
 );
@@ -236,7 +236,7 @@ ORDER BY b.i_brand_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_category CASCADE;
-CREATE UNLOGGED TABLE tdw_category(
+CREATE TABLE tdw_category(
   i_category_id int PRIMARY KEY,
   i_category text
 );
@@ -255,7 +255,7 @@ FROM temp
 WHERE category_rank = 1;
 
 DROP TABLE IF EXISTS mobdb_category CASCADE;
-CREATE UNLOGGED TABLE mobdb_category(
+CREATE TABLE mobdb_category(
   i_category_id int PRIMARY KEY,
   i_category text
 );
@@ -267,7 +267,7 @@ SELECT * FROM tdw_category;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_brand_category CASCADE;
-CREATE UNLOGGED TABLE tdw_brand_category(
+CREATE TABLE tdw_brand_category(
   i_brand_id int NOT NULL,
   i_category_id int NOT NULL,
   FromDate date NOT NULL,
@@ -288,7 +288,7 @@ FROM temp
 ORDER BY i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_brand_category CASCADE;
-CREATE UNLOGGED TABLE mobdb_brand_category(
+CREATE TABLE mobdb_brand_category(
   i_brand_id int NOT NULL,
   i_category_id int NOT NULL,
   i_brand_category_vt tstzspanset,
@@ -308,7 +308,7 @@ ORDER BY i_brand_id, i_category_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_item_brand CASCADE;
-CREATE UNLOGGED TABLE tdw_item_brand(
+CREATE TABLE tdw_item_brand(
   i_item_id char(16) NOT NULL,
   i_brand_id int NOT NULL,
   FromDate date NOT NULL,
@@ -329,7 +329,7 @@ FROM temp
 ORDER BY i_item_id, i_brand_id;
 
 DROP TABLE IF EXISTS mobdb_item_brand CASCADE;
-CREATE UNLOGGED TABLE mobdb_item_brand(
+CREATE TABLE mobdb_item_brand(
   i_item_id char(16) NOT NULL,
   i_brand_id int NOT NULL,
   i_item_brand_vt tstzspanset,
@@ -350,7 +350,7 @@ ORDER BY i_item_id, i_brand_id;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS tdw_item_price CASCADE;
-CREATE UNLOGGED TABLE tdw_item_price(
+CREATE TABLE tdw_item_price(
   i_item_id char(16) NOT NULL,
   i_item_price decimal(7, 2) NULL,
   FromDate date NOT NULL,
@@ -370,7 +370,7 @@ FROM temp
 ORDER BY i_item_id, i_item_price;
 
 DROP TABLE IF EXISTS mobdb_item_price CASCADE;
-CREATE UNLOGGED TABLE mobdb_item_price(
+CREATE TABLE mobdb_item_price(
   i_item_id char(16) NOT NULL,
   i_item_price decimal(7, 2) NULL,
   i_item_price_vt tstzspanset,
@@ -391,7 +391,7 @@ ORDER BY i_item_id, i_current_price;
  *****************************************************************************/
 
 DROP TABLE IF EXISTS date_dim CASCADE;
-CREATE UNLOGGED TABLE date_dim(
+CREATE TABLE date_dim(
   d_date_sk int PRIMARY KEY,
   d_date_id char(16) NOT NULL,
   d_date date NULL,
@@ -428,6 +428,7 @@ EXECUTE format('COPY date_dim FROM ''%sdate_dim.csv'' DELIMITER '',''  CSV HEADE
  * store_sales
  *****************************************************************************/
 
+/* The following table is UNLOGGED to speed up the loading for SF 100 */
 DROP TABLE IF EXISTS store_sales CASCADE;
 CREATE UNLOGGED TABLE store_sales(
   ss_sold_date_sk int NOT NULL,
@@ -474,6 +475,8 @@ ALTER TABLE store_sales ADD CONSTRAINT store_sales_fk_item
   FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk);
 ALTER TABLE store_sales ADD CONSTRAINT fk_item_id
  FOREIGN KEY(ss_item_id) REFERENCES tdw_item (i_item_id);
+
+ALTER TABLE store_sales SET LOGGED;
 
 /******************************************************************************/
 

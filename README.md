@@ -54,8 +54,8 @@ Timing is on.
 -- Please notice that loading the scale factor 100 takes considerable time.
 -- The loading time for the three scale factors on a desktop machine with an
 -- AMD Ryzen 9 3900X 12-Core Processor 3.79 GHz and 64 G of RAM are as follows
--- * sf1: Time: 32855.821 ms (00:32.856)
--- * sf10: Time: 383145.002 ms (06:23.145)
+-- * sf1: Time: 30770.830 ms (00:30.771)
+-- * sf10: Time: 369864.800 ms (06:09.865)
 -- * sf100: Time: 6158453.478 ms (01:42:38.453)
 tpcds_sf1=> select tdw_load(1);
 NOTICE:  installing required extension "postgis"
