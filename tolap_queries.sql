@@ -69,9 +69,6 @@ IF newtable THEN
     NumberRows bigint,
     J json
   );
-  DROP VIEW IF EXISTS mobdb_store_sales;
-  CREATE VIEW mobdb_store_sales AS
-  SELECT * FROM tdw_store_sales;
 END IF;
 
 -- Set the timeout of queries to 5 minutes
@@ -96,7 +93,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.i_price5to10_vt, SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, Q1_MobDB q
+  FROM store_sales s, date_dim d, Q1_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = q.i_item_id AND
     q.i_price5to10_vt @> d.d_date
   GROUP BY q.i_item_id, q.i_price5to10_vt
@@ -125,7 +122,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM tdw_store_sales s, date_dim d, Q1_TDW q
+  FROM store_sales s, date_dim d, Q1_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = q.i_item_id AND
     q.FromDate <= d.d_date AND d.d_date < q.ToDate
   GROUP BY q.i_item_id, q.FromDate, q.ToDate
@@ -154,7 +151,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM scd_store_sales s, date_dim d, scd_item i, Q1_SCD q
+  FROM store_sales s, date_dim d, scd_item i, Q1_SCD q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND
     i.i_item_id = q.i_item_id AND q.FromDate <= d.d_date AND d.d_date < q.ToDate
   GROUP BY q.i_item_id, q.FromDate, q.ToDate
@@ -188,7 +185,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.b_brand_anycat_vt, SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, mobdb_item i, mobdb_item_brand ib,
+  FROM store_sales s, date_dim d, mobdb_item i, mobdb_item_brand ib,
     Q2_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = ib.i_item_id AND ib.i_brand_id = q.i_brand_id AND 
@@ -219,7 +216,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM tdw_store_sales s, date_dim d, tdw_item i, tdw_item_brand ib,
+  FROM store_sales s, date_dim d, tdw_item i, tdw_item_brand ib,
     Q2_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = ib.i_item_id AND ib.i_brand_id = q.i_brand_id AND 
@@ -253,7 +250,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM scd_store_sales s, date_dim d, scd_item i, Q2_SCD q
+  FROM store_sales s, date_dim d, scd_item i, Q2_SCD q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND
     i.i_brand_id = q.i_brand_id AND
     q.FromDate <= d.d_date AND d.d_date < q.ToDate
@@ -290,7 +287,7 @@ LOOP
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.i_item_price, q.i_brand_id, q.i_price_brand_vt,
     SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, mobdb_item i, Q3_MobDB q
+  FROM store_sales s, date_dim d, mobdb_item i, Q3_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = q.i_item_id AND q.i_price_brand_vt @> d.d_date
   GROUP BY q.i_item_id, q.i_item_price, q.i_brand_id, q.i_price_brand_vt
@@ -320,7 +317,7 @@ LOOP
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.i_item_price, q.i_brand_id, q.FromDate, q.ToDate,
     SUM(s.ss_sales_price) AS TotalSales
-  FROM tdw_store_sales s, date_dim d, Q3_TDW q
+  FROM store_sales s, date_dim d, Q3_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = q.i_item_id AND
     q.FromDate <= d.d_date AND d.d_date < q.ToDate
   GROUP BY q.i_item_id, q.i_item_price, q.i_brand_id, q.FromDate, q.ToDate
@@ -350,7 +347,7 @@ LOOP
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.i_item_price, q.i_brand_id, q.FromDate, q.ToDate,
     SUM(s.ss_sales_price) AS SalesAmount
-  FROM scd_store_sales s, date_dim d, scd_item i, Q3_SCD q
+  FROM store_sales s, date_dim d, scd_item i, Q3_SCD q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND
     i.i_item_id = q.i_item_id AND q.FromDate <= d.d_date AND d.d_date < q.ToDate
   GROUP BY q.i_item_id, q.i_item_price, q.i_brand_id, q.FromDate, q.ToDate
@@ -385,7 +382,7 @@ LOOP
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.i_brandAOrPriceGT20_vt,
     SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, mobdb_item i, Q4_MobDB q
+  FROM store_sales s, date_dim d, mobdb_item i, Q4_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = q.i_item_id AND q.i_brandAOrPriceGT20_vt @> d.d_date
   GROUP BY q.i_item_id, i_brandAOrPriceGT20_vt
@@ -414,7 +411,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM tdw_store_sales s, date_dim d, Q4_TDW q
+  FROM store_sales s, date_dim d, Q4_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = q.i_item_id AND
     q.FromDate <= d.d_date AND d.d_date < q.ToDate
   GROUP BY q.i_item_id, q.FromDate, q.ToDate
@@ -443,7 +440,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_item_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM scd_store_sales s, date_dim d, scd_item i, Q4_SCD q
+  FROM store_sales s, date_dim d, scd_item i, Q4_SCD q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND
     i.i_item_id = q.i_item_id AND q.FromDate <= d.d_date AND d.d_date <= q.ToDate
   GROUP BY q.i_item_id, q.FromDate, q.ToDate
@@ -477,7 +474,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.i_onecat_vt, SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, mobdb_item i, mobdb_item_brand ib,
+  FROM store_sales s, date_dim d, mobdb_item i, mobdb_item_brand ib,
     Q5_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = ib.i_item_id AND ib.i_brand_id = q.i_brand_id
@@ -510,7 +507,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price) AS TotalSales 
-  FROM tdw_store_sales s, date_dim d, tdw_item i, tdw_item_brand ib, Q5_TDW q
+  FROM store_sales s, date_dim d, tdw_item i, tdw_item_brand ib, Q5_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = i.i_item_id AND
     i.i_item_id = ib.i_item_id AND ib.i_brand_id = q.i_brand_id AND
     q.FromDate <= d.d_date AND d.d_date < q.ToDate 
@@ -544,7 +541,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.ToDate, SUM(s.ss_sales_price)
-  FROM scd_store_sales s, date_dim d, scd_item i, Q5_SCD q 
+  FROM store_sales s, date_dim d, scd_item i, Q5_SCD q 
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND
     i.i_brand_id = q.i_brand_id AND q.FromDate <= d.d_date AND d.d_date < q.ToDate 
   GROUP BY q.i_brand_id, q.FromDate, q.ToDate
@@ -579,7 +576,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.i_gt5items_vt, SUM(s.ss_sales_price) AS TotalSales
-  FROM mobdb_store_sales s, date_dim d, mobdb_item_brand ib, Q6_MobDB q
+  FROM store_sales s, date_dim d, mobdb_item_brand ib, Q6_MobDB q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = ib.i_item_id AND 
     ib.i_brand_id = q.i_brand_id AND q.i_gt5items_vt @> d.d_date
   GROUP BY q.i_brand_id, q.i_gt5items_vt
@@ -608,7 +605,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.toDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM tdw_store_sales s, date_dim d, tdw_item_brand ib, Q6_TDW q
+  FROM store_sales s, date_dim d, tdw_item_brand ib, Q6_TDW q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_id = ib.i_item_id AND 
     ib.i_brand_id = q.i_brand_id AND q.FromDate <= d.d_date AND
     d.d_date < q.ToDate
@@ -638,7 +635,7 @@ LOOP
 
   EXPLAIN (ANALYZE, FORMAT JSON)
   SELECT q.i_brand_id, q.FromDate, q.toDate, SUM(s.ss_sales_price) AS TotalSales
-  FROM scd_store_sales s, date_dim d, scd_item i, Q6_SCD q
+  FROM store_sales s, date_dim d, scd_item i, Q6_SCD q
   WHERE s.ss_sold_date_sk = d.d_date_sk AND s.ss_item_sk = i.i_item_sk AND 
     i.i_brand_id = q.i_brand_id AND q.FromDate <= d.d_date AND
     d.d_date < q.ToDate

@@ -44,7 +44,7 @@
  * loading the data. The CSV files are expected to be in subdirectories of the
  * current repository, e.g., ..../sf1/scd_item.csv.
  *
- * There are three CSV files, namely, scd_item.csv, scd_store_sales.csv, and
+ * There are three CSV files, namely, scd_item.csv, store_sales.csv, and
  * date_dim.csv. These files correspond to the SCD implementation. From the
  * same files, the TDW and the MobilityDB implementation are derived.
  *
@@ -428,8 +428,8 @@ EXECUTE format('COPY date_dim FROM ''%sdate_dim.csv'' DELIMITER '',''  CSV HEADE
  * store_sales
  *****************************************************************************/
 
-DROP TABLE IF EXISTS scd_store_sales CASCADE;
-CREATE UNLOGGED TABLE scd_store_sales(
+DROP TABLE IF EXISTS store_sales CASCADE;
+CREATE UNLOGGED TABLE store_sales(
   ss_sold_date_sk int NOT NULL,
   ss_sold_time_sk int NULL,
   ss_item_sk int NULL,
@@ -455,34 +455,24 @@ CREATE UNLOGGED TABLE scd_store_sales(
   ss_net_profit decimal(7, 2) NULL
 );
 
-EXECUTE format('COPY scd_store_sales FROM ''%sscd_store_sales.csv'' DELIMITER '',''  CSV HEADER', Path);
+EXECUTE format('COPY store_sales FROM ''%sstore_sales.csv'' DELIMITER '',''  CSV HEADER', Path);
 
-DROP TABLE IF EXISTS tdw_store_sales CASCADE;
-CREATE UNLOGGED TABLE tdw_store_sales AS
-SELECT * FROM scd_store_sales;
+ALTER TABLE store_sales ADD COLUMN ss_item_id char(16);
 
-ALTER TABLE tdw_store_sales ADD COLUMN ss_item_id char(16);
-
-UPDATE tdw_store_sales s
+UPDATE store_sales s
 SET ss_item_id = i.i_item_id
 FROM scd_item i
 WHERE s.ss_item_sk = i.i_item_sk;
 
-/* Tables mobdb_store_sales and tdw_store_sales are equal
- * The following view is created to avoid any ambiguity */
-DROP VIEW IF EXISTS mobdb_store_sales CASCADE;
-CREATE VIEW mobdb_store_sales AS
-SELECT * FROM tdw_store_sales;
-
 /* Add the constraints after the fact tables have been created */
 
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_pk
+ALTER TABLE store_sales ADD CONSTRAINT store_sales_pk
   PRIMARY KEY (ss_item_sk, ss_sold_date_sk, ss_ticket_number);
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_date
+ALTER TABLE store_sales ADD CONSTRAINT store_sales_fk_date
   FOREIGN KEY(ss_sold_date_sk) REFERENCES date_dim (d_date_sk);
-ALTER TABLE scd_store_sales ADD CONSTRAINT scd_store_sales_fk_item
+ALTER TABLE store_sales ADD CONSTRAINT store_sales_fk_item
   FOREIGN KEY(ss_item_sk) REFERENCES scd_item (i_item_sk);
-ALTER TABLE tdw_store_sales ADD CONSTRAINT fk_item_id
+ALTER TABLE store_sales ADD CONSTRAINT fk_item_id
  FOREIGN KEY(ss_item_id) REFERENCES tdw_item (i_item_id);
 
 /******************************************************************************/
