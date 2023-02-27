@@ -102,7 +102,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -131,7 +131,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -160,7 +160,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -196,7 +196,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -227,7 +227,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -260,7 +260,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -296,7 +296,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -326,7 +326,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -356,7 +356,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -391,7 +391,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -420,7 +420,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -449,7 +449,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -485,7 +485,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -517,7 +517,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -550,7 +550,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -585,7 +585,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(MILLISECONDS FROM Duration)/1000;
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -615,7 +615,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN
@@ -645,7 +645,7 @@ LOOP
 
   PlanningTime := (J->0->>'Planning Time')::float;
   ExecutionTime := (J->0->>'Execution Time')::float;
-  Duration := make_interval(secs := PlanningTime + ExecutionTime);
+  Duration := make_interval(secs := (PlanningTime + ExecutionTime) / 1000);
   Seconds := EXTRACT(epoch FROM Duration);
   NumberRows := (J->0->'Plan'->>'Actual Rows')::bigint;
   IF detailed THEN

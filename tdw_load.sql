@@ -150,7 +150,7 @@ CREATE TABLE tdw_item_vt(
 
 INSERT INTO tdw_item_vt(i_item_id, FromDate, ToDate)
 WITH temp(i_item_id, i_item_vt) AS (
-  SELECT i_item_id, unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
+  SELECT i_item_id, unnest(spans(span_union(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id )
 SELECT i_item_id, lower(i_item_vt), upper(i_item_vt)
@@ -166,7 +166,7 @@ CREATE TABLE mobdb_item(
 
 INSERT INTO mobdb_item(i_item_id, i_item_desc, i_item_vt)
 WITH temp(i_item_id, i_item_vt) AS (
-  SELECT i_item_id, tunion(span(i_rec_start_date, i_rec_end_date))
+  SELECT i_item_id, span_union(span(i_rec_start_date, i_rec_end_date))
   FROM scd_item
   GROUP BY i_item_id )
 SELECT i.i_item_id, i.i_item_desc, t.i_item_vt
@@ -208,7 +208,7 @@ CREATE TABLE tdw_brand_vt(
 
 INSERT INTO tdw_brand_vt(i_brand_id, FromDate, ToDate)
 WITH temp(i_brand_id, i_brand_vt) AS (
-  SELECT i_brand_id, unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
+  SELECT i_brand_id, unnest(spans(span_union(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_brand_id )
 SELECT i_brand_id, lower(i_brand_vt), upper(i_brand_vt)
@@ -223,7 +223,7 @@ CREATE TABLE mobdb_brand(
 
 INSERT INTO mobdb_brand(i_brand_id, i_brand_vt)
 WITH temp(i_brand_id, i_brand_vt) AS (
-  SELECT i_brand_id, tunion(span(i_rec_start_date, i_rec_end_date))
+  SELECT i_brand_id, span_union(span(i_rec_start_date, i_rec_end_date))
   FROM scd_item
   GROUP BY i_brand_id )
 SELECT b.i_brand_id, t.i_brand_vt
@@ -280,7 +280,7 @@ CREATE TABLE tdw_brand_category(
 INSERT INTO tdw_brand_category(i_brand_id, i_category_id, FromDate, ToDate)
 WITH temp(i_brand_id, i_category_id, i_brand_cat_vt) AS (
   SELECT i_brand_id, i_category_id,
-    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(span_union(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_brand_id, i_category_id )
 SELECT i_brand_id, i_category_id, lower(i_brand_cat_vt), upper(i_brand_cat_vt)
@@ -298,7 +298,7 @@ CREATE TABLE mobdb_brand_category(
 );
 
 INSERT INTO mobdb_brand_category(i_brand_id, i_category_id, i_brand_category_vt)
-SELECT i_brand_id, i_category_id, tunion(span(i_rec_start_date, i_rec_end_date))
+SELECT i_brand_id, i_category_id, span_union(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_brand_id, i_category_id 
 ORDER BY i_brand_id, i_category_id;
@@ -321,7 +321,7 @@ CREATE TABLE tdw_item_brand(
 INSERT INTO tdw_item_brand(i_item_id, i_brand_id, FromDate, ToDate)
 WITH temp(i_item_id, i_brand_id, i_item_brand_vt) AS (
   SELECT i_item_id, i_brand_id,
-    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(span_union(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id, i_brand_id )
 SELECT i_item_id, i_brand_id, lower(i_item_brand_vt), upper(i_item_brand_vt)
@@ -340,7 +340,7 @@ CREATE TABLE mobdb_item_brand(
 
 INSERT INTO mobdb_item_brand(i_item_id, i_brand_id, i_item_brand_vt)
 SELECT i_item_id, i_brand_id,
-  tunion(span(i_rec_start_date, i_rec_end_date))
+  span_union(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_item_id, i_brand_id
 ORDER BY i_item_id, i_brand_id;
@@ -362,7 +362,7 @@ CREATE TABLE tdw_item_price(
 INSERT INTO tdw_item_price(i_item_id, i_item_price, FromDate, ToDate)
 WITH temp(i_item_id, i_item_price, i_item_price_vt) AS (
   SELECT i_item_id, i_current_price,
-    unnest(spans(tunion(span(i_rec_start_date, i_rec_end_date))))
+    unnest(spans(span_union(span(i_rec_start_date, i_rec_end_date))))
   FROM scd_item
   GROUP BY i_item_id, i_current_price )
 SELECT i_item_id, i_item_price, lower(i_item_price_vt), upper(i_item_price_vt)
@@ -380,7 +380,7 @@ CREATE TABLE mobdb_item_price(
 
 INSERT INTO mobdb_item_price(i_item_id, i_item_price, i_item_price_vt)
 SELECT i_item_id, i_current_price,
-  tunion(span(i_rec_start_date, i_rec_end_date))
+  span_union(span(i_rec_start_date, i_rec_end_date))
 FROM scd_item
 GROUP BY i_item_id, i_current_price
 ORDER BY i_item_id, i_current_price;
