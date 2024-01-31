@@ -1,0 +1,344 @@
+$ psql tpcds_sf1
+psql (16.2)
+Type "help" for help.
+
+tpcds_sf1=# \i cardinality.sql
+    table    |  count  |  size
+-------------+---------+--------
+ store_sales | 2490396 | 483 MB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ date_dim |  2191 | 1496 kB
+(1 row)
+
+  table   | count | size
+----------+-------+-------
+ scd_item | 17954 | 12 MB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ tdw_item |  8990 | 1768 kB
+(1 row)
+
+    table    | count |  size
+-------------+-------+--------
+ tdw_item_ls |  8995 | 944 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+---------
+ tdw_item_price | 17944 | 1976 kB
+(1 row)
+
+   table   | count |  size
+-----------+-------+--------
+ tdw_brand |   949 | 144 kB
+(1 row)
+
+    table     | count | size
+--------------+-------+-------
+ tdw_category |    10 | 24 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+---------
+ tdw_item_brand | 13436 | 1488 kB
+(1 row)
+
+       table       | count |  size
+-------------------+-------+---------
+ tdw_item_category | 17063 | 1880 kB
+(1 row)
+
+   table    | count |  size
+------------+-------+---------
+ mobdb_item |  8990 | 4232 kB
+(1 row)
+
+      table       | count |  size
+------------------+-------+---------
+ mobdb_item_price | 17943 | 2824 kB
+(1 row)
+
+    table    | count |  size
+-------------+-------+--------
+ mobdb_brand |   949 | 512 kB
+(1 row)
+
+     table      | count | size
+----------------+-------+-------
+ mobdb_category |    10 | 32 kB
+(1 row)
+
+      table       | count |  size
+------------------+-------+---------
+ mobdb_item_brand | 13428 | 2240 kB
+(1 row)
+
+        table        | count |  size
+---------------------+-------+---------
+ mobdb_item_category | 16805 | 2672 kB
+(1 row)
+
+tpcds_sf1=# \q
+$ psql tpcds_sf10
+psql (16.2)
+Type "help" for help.
+
+tpcds_sf10=# \i cardinality.sql
+    table    |  count   |  size
+-------------+----------+---------
+ store_sales | 24906844 | 4835 MB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ date_dim |  2191 | 1496 kB
+(1 row)
+
+  table   | count  | size
+----------+--------+-------
+ scd_item | 101757 | 63 MB
+(1 row)
+
+  table   | count | size
+----------+-------+-------
+ tdw_item | 50957 | 11 MB
+(1 row)
+
+    table    | count |  size
+-------------+-------+---------
+ tdw_item_ls | 50994 | 5080 kB
+(1 row)
+
+     table      | count  | size
+----------------+--------+-------
+ tdw_item_price | 101708 | 11 MB
+(1 row)
+
+   table   | count |  size
+-----------+-------+--------
+ tdw_brand |   953 | 144 kB
+(1 row)
+
+    table     | count | size
+--------------+-------+-------
+ tdw_category |    10 | 24 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+---------
+ tdw_item_brand | 76487 | 8272 kB
+(1 row)
+
+       table       | count | size
+-------------------+-------+-------
+ tdw_item_category | 96737 | 10 MB
+(1 row)
+
+   table    | count | size
+------------+-------+-------
+ mobdb_item | 50957 | 23 MB
+(1 row)
+
+      table       | count  | size
+------------------+--------+-------
+ mobdb_item_price | 101696 | 15 MB
+(1 row)
+
+    table    | count |  size
+-------------+-------+---------
+ mobdb_brand |   953 | 1128 kB
+(1 row)
+
+     table      | count | size
+----------------+-------+-------
+ mobdb_category |    10 | 96 kB
+(1 row)
+
+      table       | count | size
+------------------+-------+-------
+ mobdb_item_brand | 76425 | 12 MB
+(1 row)
+
+        table        | count | size
+---------------------+-------+-------
+ mobdb_item_category | 95156 | 15 MB
+(1 row)
+
+tpcds_sf10=# \q
+$ psql tpcds_sf50
+psql (16.2)
+Type "help" for help.
+
+tpcds_sf50=# \i cardinality.sql
+    table    |   count   | size
+-------------+-----------+-------
+ store_sales | 124537879 | 24 GB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ date_dim |  2191 | 1552 kB
+(1 row)
+
+  table   | count | size
+----------+-------+-------
+ scd_item | 61852 | 39 MB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ tdw_item | 30976 | 6432 kB
+(1 row)
+
+    table    | count |  size
+-------------+-------+---------
+ tdw_item_ls | 30995 | 3096 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+---------
+ tdw_item_price | 61820 | 6688 kB
+(1 row)
+
+   table   | count |  size
+-----------+-------+--------
+ tdw_brand |   953 | 144 kB
+(1 row)
+
+    table     | count | size
+--------------+-------+-------
+ tdw_category |    10 | 24 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+---------
+ tdw_item_brand | 46491 | 5048 kB
+(1 row)
+
+       table       | count |  size
+-------------------+-------+---------
+ tdw_item_category | 58765 | 6368 kB
+(1 row)
+
+   table    | count | size
+------------+-------+-------
+ mobdb_item | 30976 | 14 MB
+(1 row)
+
+      table       | count |  size
+------------------+-------+---------
+ mobdb_item_price | 61812 | 9584 kB
+(1 row)
+
+    table    | count |  size
+-------------+-------+---------
+ mobdb_brand |   953 | 1048 kB
+(1 row)
+
+     table      | count | size
+----------------+-------+-------
+ mobdb_category |    10 | 72 kB
+(1 row)
+
+      table       | count |  size
+------------------+-------+---------
+ mobdb_item_brand | 46455 | 7584 kB
+(1 row)
+
+        table        | count |  size
+---------------------+-------+---------
+ mobdb_item_category | 57796 | 9064 kB
+(1 row)
+
+tpcds_sf50=# \q
+$ psql tpcds_sf100
+psql (16.2)
+Type "help" for help.
+
+tpcds_sf100=# \i cardinality.sql
+    table    |   count   | size
+-------------+-----------+-------
+ store_sales | 249018772 | 47 GB
+(1 row)
+
+  table   | count |  size
+----------+-------+---------
+ date_dim |  2191 | 1552 kB
+(1 row)
+
+  table   | count  |  size
+----------+--------+--------
+ scd_item | 203478 | 125 MB
+(1 row)
+
+  table   | count  | size
+----------+--------+-------
+ tdw_item | 101913 | 22 MB
+(1 row)
+
+    table    | count  |   size
+-------------+--------+----------
+ tdw_item_ls | 101997 | 10096 kB
+(1 row)
+
+     table      | count  | size
+----------------+--------+-------
+ tdw_item_price | 203389 | 21 MB
+(1 row)
+
+   table   | count |  size
+-----------+-------+--------
+ tdw_brand |   953 | 144 kB
+(1 row)
+
+    table     | count | size
+--------------+-------+-------
+ tdw_category |    10 | 24 kB
+(1 row)
+
+     table      | count  | size
+----------------+--------+-------
+ tdw_item_brand | 152907 | 16 MB
+(1 row)
+
+       table       | count  | size
+-------------------+--------+-------
+ tdw_item_category | 193417 | 20 MB
+(1 row)
+
+   table    | count  | size
+------------+--------+-------
+ mobdb_item | 101913 | 46 MB
+(1 row)
+
+      table       | count  | size
+------------------+--------+-------
+ mobdb_item_price | 203362 | 31 MB
+(1 row)
+
+    table    | count |  size
+-------------+-------+--------
+ mobdb_brand |   953 | 792 kB
+(1 row)
+
+     table      | count |  size
+----------------+-------+--------
+ mobdb_category |    10 | 128 kB
+(1 row)
+
+      table       | count  | size
+------------------+--------+-------
+ mobdb_item_brand | 152768 | 24 MB
+(1 row)
+
+        table        | count  | size
+---------------------+--------+-------
+ mobdb_item_category | 190239 | 29 MB
+(1 row)
+
+tpcds_sf100=#
